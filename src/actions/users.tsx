@@ -18,3 +18,17 @@ export async function getUserCredits() {
 
   return user.credits;
 }
+
+export async function getUserDetails() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) return null;
+
+  const user = await db.user.findUniqueOrThrow({
+    where: { id: session.user.id },
+    select: { name: true, createdAt: true },
+  });
+
+  return user;
+}

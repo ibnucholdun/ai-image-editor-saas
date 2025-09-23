@@ -3,6 +3,7 @@
 import { db } from "~/server/db";
 import { auth } from "~/lib/auth";
 import { headers } from "next/headers";
+import { unstable_cache } from "next/cache";
 
 interface CreateProjectData {
   imageUrl: string;
@@ -10,6 +11,17 @@ interface CreateProjectData {
   filePath: string;
   name?: string;
 }
+
+const cachedProjects = unstable_cache(
+  async (userId: string) => {
+    return db.project.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    });
+  },
+  ["user-projects"],
+  { revalidate: 60 },
+);
 
 export async function createProject(data: CreateProjectData) {
   try {
@@ -48,14 +60,7 @@ export async function getUserProjects() {
       throw new Error("Unauthorized");
     }
 
-    const projects = await db.project.findMany({
-      where: {
-        userId: session.user.id,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const projects = await cachedProjects(session.user.id);
 
     return { success: true, projects };
   } catch (error) {
