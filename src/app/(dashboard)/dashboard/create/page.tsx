@@ -732,9 +732,7 @@ export default function CreatePage() {
                           </div>
                         )}
                         <ImageKitImage
-                          urlEndpoint={
-                            env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT as string
-                          }
+                          urlEndpoint={env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
                           src={uploadedImage.filePath}
                           alt={uploadedImage.name}
                           width={800}
@@ -805,9 +803,7 @@ export default function CreatePage() {
                       {/* Main image */}
                       <div className="relative h-full w-full overflow-hidden">
                         <ImageKitImage
-                          urlEndpoint={
-                            env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT as string
-                          }
+                          urlEndpoint={env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
                           src={project.filePath}
                           alt={project.name ?? "Project"}
                           width={300}

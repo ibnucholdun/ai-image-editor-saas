@@ -295,9 +295,7 @@ export default function DashboardPage() {
                     >
                       <div className="aspect-square overflow-hidden">
                         <ImageKitImage
-                          urlEndpoint={
-                            env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT as string
-                          }
+                          urlEndpoint={env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
                           src={project.filePath}
                           alt={project.name ?? "Project"}
                           width={200}

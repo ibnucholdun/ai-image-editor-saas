@@ -252,9 +252,7 @@ export default function ProjectsPage() {
                   >
                     <div className="relative aspect-square overflow-hidden">
                       <ImageKitImage
-                        urlEndpoint={
-                          env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT as string
-                        }
+                        urlEndpoint={env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
                         src={project.filePath}
                         alt={project.name ?? "Project"}
                         width={300}
@@ -299,9 +297,7 @@ export default function ProjectsPage() {
                     <CardContent className="flex items-center gap-4 p-4">
                       <div className="h-16 w-16 overflow-hidden rounded-lg border">
                         <ImageKitImage
-                          urlEndpoint={
-                            env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT as string
-                          }
+                          urlEndpoint={env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
                           src={project.filePath}
                           alt={project.name ?? "Project"}
                           width={64}

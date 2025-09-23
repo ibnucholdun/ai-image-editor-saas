@@ -50,7 +50,7 @@ export const auth = betterAuth({
         }),
         portal(),
         webhooks({
-          secret: env.POLAR_WEBHOOK_SECRET as string,
+          secret: env.POLAR_WEBHOOK_SECRET,
           onOrderPaid: async (order) => {
             const externalCustomerId = order.data.customer.externalId;
 
