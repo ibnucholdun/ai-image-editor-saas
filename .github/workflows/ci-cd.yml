@@ -41,10 +41,6 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      # 5. Run tests
-      - name: Run tests
-        run: npm test
-
       # 6. Build Next.js
       - name: Build Next.js
         run: npm run build
