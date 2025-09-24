@@ -218,7 +218,9 @@ export default function DashboardView({
                   <div
                     key={project.id}
                     className="group relative cursor-pointer overflow-hidden rounded-lg border transition-all hover:shadow-md"
-                    onClick={() => router.push("/dashboard/create")}
+                    onClick={() =>
+                      router.push(`/dashboard/create/${project.id}/edit`)
+                    }
                   >
                     <div className="aspect-square overflow-hidden">
                       <ImageKitImage

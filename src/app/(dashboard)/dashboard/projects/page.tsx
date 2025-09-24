@@ -17,13 +17,19 @@ import {
 } from "lucide-react";
 import { authClient } from "~/lib/auth-client";
 import { useEffect, useState } from "react";
-import { getUserProjects } from "~/actions/projects";
+import { deleteProject, getUserProjects } from "~/actions/projects";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useRouter } from "next/navigation";
 import { Image as ImageKitImage } from "@imagekit/next";
 import { env } from "~/env";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 
 interface Project {
   id: string;
@@ -103,9 +109,24 @@ export default function ProjectsPage() {
     setFilteredProjects(filtered);
   }, [userProjects, searchQuery, sortBy]);
 
-  const handleProjectClick = (_project: Project) => {
+  const handleProjectClick = (projectId: string) => {
     // Navigate to create page with project data - you can extend this to load the project
-    router.push("/dashboard/create");
+    router.push(`/dashboard/create/${projectId}/edit`);
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      const deleteResult = await deleteProject(projectId);
+      if (!deleteResult.success) {
+        console.error("Failed to delete project");
+        return;
+      }
+
+      setUserProjects((prev) => prev.filter((p) => p.id !== projectId));
+      setFilteredProjects((prev) => prev.filter((p) => p.id !== projectId));
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
   };
 
   if (isLoading) {
@@ -248,9 +269,11 @@ export default function ProjectsPage() {
                   <Card
                     key={project.id}
                     className="group cursor-pointer overflow-hidden transition-all hover:shadow-lg"
-                    onClick={() => handleProjectClick(project)}
                   >
-                    <div className="relative aspect-square overflow-hidden">
+                    <div
+                      className="relative aspect-square overflow-hidden"
+                      onClick={() => handleProjectClick(project.id)}
+                    >
                       <ImageKitImage
                         urlEndpoint={env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
                         src={project.filePath}
@@ -277,13 +300,41 @@ export default function ProjectsPage() {
                           {new Date(project.createdAt).toLocaleDateString()}
                         </p>
                         <div className="opacity-0 transition-opacity group-hover:opacity-100">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0"
-                          >
-                            <MoreVertical className="h-3 w-3" />
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                              >
+                                <MoreVertical className="h-3 w-3" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-20" align="start">
+                              <DropdownMenuGroup className="space-y-1 p-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    router.push(
+                                      `/dashboard/create/${project.id}/edit`,
+                                    )
+                                  }
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleDeleteProject(project.id)
+                                  }
+                                >
+                                  Delete
+                                </Button>
+                              </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </div>
                     </CardContent>
@@ -292,10 +343,12 @@ export default function ProjectsPage() {
                   <Card
                     key={project.id}
                     className="group cursor-pointer transition-all hover:shadow-md"
-                    onClick={() => handleProjectClick(project)}
                   >
                     <CardContent className="flex items-center gap-4 p-4">
-                      <div className="h-16 w-16 overflow-hidden rounded-lg border">
+                      <div
+                        className="h-16 w-16 overflow-hidden rounded-lg border"
+                        onClick={() => handleProjectClick(project.id)}
+                      >
                         <ImageKitImage
                           urlEndpoint={env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}
                           src={project.filePath}
